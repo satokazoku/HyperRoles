@@ -26,8 +26,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\HyperRoles-logo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\HyperRoles-logo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Folder Include="Modules\" />
-	  <Folder Include="Patches\" />
 	</ItemGroup>
 
 	<Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
