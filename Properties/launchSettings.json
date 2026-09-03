@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "HyperRoles": {
+      "commandName": "Project"
+    },
+    "HyperRoles起動": {
+      "commandName": "Executable",
+      "executablePath": "$(AmongUs)\\Among Us.exe"
+    }
+  }
+}

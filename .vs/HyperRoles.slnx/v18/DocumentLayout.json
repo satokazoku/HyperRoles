@@ -1,0 +1,69 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\satoko\\source\\repos\\HyperRoles\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\satoko\\source\\repos\\hyperroles\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\satoko\\source\\repos\\hyperroles\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\satoko\\source\\repos\\hyperroles\\pre\\hyperroles.dll||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:pre\\hyperroles.dll||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\satoko\\source\\repos\\HyperRoles\\.gitignore",
+              "RelativeDocumentMoniker": ".gitignore",
+              "ToolTip": "C:\\Users\\satoko\\source\\repos\\HyperRoles\\.gitignore",
+              "RelativeToolTip": ".gitignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-09-03T00:32:32.344Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HyperRoles.dll",
+              "DocumentMoniker": "C:\\Users\\satoko\\source\\repos\\HyperRoles\\Pre\\HyperRoles.dll",
+              "RelativeDocumentMoniker": "Pre\\HyperRoles.dll",
+              "ToolTip": "C:\\Users\\satoko\\source\\repos\\HyperRoles\\Pre\\HyperRoles.dll",
+              "RelativeToolTip": "Pre\\HyperRoles.dll",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001697|",
+              "WhenOpened": "2026-09-03T00:16:13.161Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Main.cs",
+              "DocumentMoniker": "C:\\Users\\satoko\\source\\repos\\HyperRoles\\Main.cs",
+              "RelativeDocumentMoniker": "Main.cs",
+              "ToolTip": "C:\\Users\\satoko\\source\\repos\\HyperRoles\\Main.cs",
+              "RelativeToolTip": "Main.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAAABMAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-03T00:06:00.887Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
