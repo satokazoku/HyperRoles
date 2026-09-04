@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using HarmonyLib;
+using System.IO;
 using System.Reflection;
 using System.Text;
-using HarmonyLib;
 using TMPro;
 using UnityEngine;
 
@@ -111,7 +111,7 @@ namespace HyperRoles
                 HyRLogo = logoObject.AddComponent<SpriteRenderer>();
                 logoTransform.parent = rightpanel;
                 logoTransform.localPosition = new Vector3(0f, 0.15f, 1f);
-                logoTransform.localScale = Vector3.one;
+                logoTransform.localScale *= 0.45f;
                 HyRLogo.sprite = LoadSpriteFromResource("HyperRoles.Resources.HyperRoles-logo.png", 175f);
             }
         }

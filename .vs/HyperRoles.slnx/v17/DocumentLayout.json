@@ -1,0 +1,126 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\tiram\\HyperRoles\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\tiram\\hyperroles\\patches\\lobbypatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:patches\\lobbypatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\tiram\\hyperroles\\patches\\intropatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:patches\\intropatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\tiram\\hyperroles\\patches\\uipatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:patches\\uipatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\tiram\\hyperroles\\patches\\disiblepublicroompatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:patches\\disiblepublicroompatch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\tiram\\hyperroles\\roles\\rolebase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:roles\\rolebase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|c:\\users\\tiram\\hyperroles\\hyperroles.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{66C765CF-3C31-6E07-08BC-13AC646344C2}|HyperRoles.csproj|solutionrelative:hyperroles.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UiPatch.cs",
+              "DocumentMoniker": "C:\\Users\\tiram\\HyperRoles\\Patches\\UiPatch.cs",
+              "RelativeDocumentMoniker": "Patches\\UiPatch.cs",
+              "ToolTip": "C:\\Users\\tiram\\HyperRoles\\Patches\\UiPatch.cs",
+              "RelativeToolTip": "Patches\\UiPatch.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-03T12:04:13.97Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DisiblePublicRoomPatch.cs",
+              "DocumentMoniker": "C:\\Users\\tiram\\HyperRoles\\Patches\\DisiblePublicRoomPatch.cs",
+              "RelativeDocumentMoniker": "Patches\\DisiblePublicRoomPatch.cs",
+              "ToolTip": "C:\\Users\\tiram\\HyperRoles\\Patches\\DisiblePublicRoomPatch.cs",
+              "RelativeToolTip": "Patches\\DisiblePublicRoomPatch.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvw4AAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-03T12:00:39.921Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LobbyPatch.cs",
+              "DocumentMoniker": "C:\\Users\\tiram\\HyperRoles\\Patches\\LobbyPatch.cs",
+              "RelativeDocumentMoniker": "Patches\\LobbyPatch.cs",
+              "ToolTip": "C:\\Users\\tiram\\HyperRoles\\Patches\\LobbyPatch.cs",
+              "RelativeToolTip": "Patches\\LobbyPatch.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-03T11:31:25.411Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IntroPatch.cs",
+              "DocumentMoniker": "C:\\Users\\tiram\\HyperRoles\\Patches\\IntroPatch.cs",
+              "RelativeDocumentMoniker": "Patches\\IntroPatch.cs",
+              "ToolTip": "C:\\Users\\tiram\\HyperRoles\\Patches\\IntroPatch.cs",
+              "RelativeToolTip": "Patches\\IntroPatch.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-03T11:05:28.661Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RoleBase.cs",
+              "DocumentMoniker": "C:\\Users\\tiram\\HyperRoles\\Roles\\RoleBase.cs",
+              "RelativeDocumentMoniker": "Roles\\RoleBase.cs",
+              "ToolTip": "C:\\Users\\tiram\\HyperRoles\\Roles\\RoleBase.cs",
+              "RelativeToolTip": "Roles\\RoleBase.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-03T11:03:06.084Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "HyperRoles",
+              "DocumentMoniker": "C:\\Users\\tiram\\HyperRoles\\HyperRoles.csproj",
+              "RelativeDocumentMoniker": "HyperRoles.csproj",
+              "ToolTip": "C:\\Users\\tiram\\HyperRoles\\HyperRoles.csproj",
+              "RelativeToolTip": "HyperRoles.csproj",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAAQAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-09-03T11:01:24.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
