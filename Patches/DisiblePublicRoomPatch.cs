@@ -1,5 +1,6 @@
-﻿using HarmonyLib;
-using System.Globalization;
+﻿using System.Globalization;
+using HarmonyLib;
+using HyperRoles;
 
 namespace TownOfHost
 {
@@ -8,6 +9,10 @@ namespace TownOfHost
     {
         public static bool Prefix(GameStartManager __instance)
         {
+            if (Main.AllowPublicRoom)
+            {
+                return true;
+            }
             var text = "Public rooms are not available.";
 
             if (CultureInfo.CurrentCulture.Name == "ja-JP")
@@ -19,6 +24,14 @@ namespace TownOfHost
                 DestroyableSingleton<HudManager>.Instance.Notifier.AddDisconnectMessage(text);
             }
             return false;
+        }
+    }
+    [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Start))]
+    public class GameStartManagerStartPatch
+    {
+        public static void Postfix(GameStartManager __instance)
+        {
+            __instance.MinPlayers = 1;
         }
     }
 }

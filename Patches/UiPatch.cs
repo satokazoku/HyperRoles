@@ -89,7 +89,7 @@ namespace HyperRoles
                 credentials.fontSize = 2f;
                 credentials.fontSizeMin = 2f;
                 credentials.fontSizeMax = 2f;
-                credentials.alignment = TextAlignmentOptions.TopRight;
+                credentials.alignment = TextAlignmentOptions.Right;
 
                 credentials.transform.position = new Vector3(1.07f, 2.8f, -5f);
             }

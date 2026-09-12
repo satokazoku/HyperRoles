@@ -19,13 +19,14 @@ namespace HyperRoles
     {
         public static readonly string ModName = "HyperRoles";
         public static readonly string ModColor = "#FF3333";
-        public static readonly bool AllowPublicRoom = true;
+        public static readonly bool AllowPublicRoom = false;
         public static readonly string ForkId = "HYPER-ROLES";
 
         public const string PluginGuid = "com.pko.hyperroles";
         public const string BepInExPluginVersion = "1.0.0";
         public const string PluginVersion = "1.0.0";
         public const string PluginShowVersion = "1.0.0";
+        public static bool IsDebugMode = false;
 
         public static Main Instance;
         public Harmony Harmony { get; } = new Harmony(PluginGuid);

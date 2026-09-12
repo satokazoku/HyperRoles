@@ -26,7 +26,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Modules\**" />
+	  <EmbeddedResource Remove="Modules\**" />
 	  <None Remove=".\Resources\**" />
+	  <None Remove="Modules\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -34,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Modules\" />
+	  <Compile Remove="Resources\ModLocalization.cs" />
 	</ItemGroup>
 
 	<Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
