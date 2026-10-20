@@ -2,6 +2,9 @@ using HarmonyLib;
 
 namespace HyperRoles;
 
+// Town Of Hostより
+// 2026/10/20に追加
+
 public static class GameStates
 {
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGame))]

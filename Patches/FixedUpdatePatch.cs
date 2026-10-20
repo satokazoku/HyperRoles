@@ -2,7 +2,6 @@
 using HarmonyLib;
 using HyperRoles.Modules;
 using HyperRoles.Roles;
-using HyperRoles.Roles.Crewmate;
 using UnityEngine;
 
 namespace HyperRoles.Patches;

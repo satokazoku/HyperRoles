@@ -28,6 +28,9 @@ SheriffIntro,Shoot The Villain,人外を撃ち抜け
 JackalIntro,Devour Everything,全てを喰らい尽くせ
 SidekickIntro,Let's Support Our Master,ご主人様をサポートしよう
 
+# Impostor Role Desc
+SilentKillerDesc,a,他のプレイヤーを視認・キルできないインポスター。\n一定時間止まったプレイヤーのみ視認・キルできる。\n(設定あり)
+
 # Button Text
 SerialKillerButtonText,Suicide,自殺まで
 CamouflagerText,Camouflage,カモフラージュ

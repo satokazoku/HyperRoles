@@ -95,3 +95,13 @@ public static class SilentKillerInvisPatch
         __instance.Visible = true;
     }
 }
+
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
+class SKurderPlayerPatch
+{
+    public static void Prefix(PlayerControl __instance, PlayerControl target)
+    {
+        if (target == null) return;
+        target.Visible = true;
+    }
+}
