@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
+// Town Of Hostより
+// 2026/10/20に追加
 namespace HyperRoles.Modules
 {
     public static class Translator

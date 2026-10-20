@@ -1,4 +1,3 @@
-/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,8 @@ using InnerNet;
 using UnityEngine;
 
 namespace HyperRoles;
+// Town Of Host-Kより
+// 2026/10/20に追加
 
 /// <summary>
 /// 開始ボタンを押したときに、テスト用のBOTを BotCount 人スポーンさせる。
@@ -247,4 +248,3 @@ static class BotOnDisconnectedPatch
 {
     public static void Postfix() => TestBotManager.ClearLocal();
 }
-*/

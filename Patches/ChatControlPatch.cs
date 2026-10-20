@@ -1,8 +1,9 @@
 ﻿using AmongUs.Data;
 using HarmonyLib;
 using UnityEngine;
-
-namespace TownOfHost
+// Town Of Hostより
+// 2026/10に追加
+namespace HyperRoles
 {
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update))]
     class ChatControllerUpdatePatch

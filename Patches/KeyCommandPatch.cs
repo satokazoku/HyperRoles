@@ -1,8 +1,10 @@
 ﻿using AmongUs.GameOptions;
 using HarmonyLib;
 using Hazel;
-using InnerNet;
 using UnityEngine;
+
+// Town Of Hostより一部移植
+// 2026/10に追加
 
 namespace HyperRoles
 {

@@ -4,7 +4,9 @@ using System.Reflection;
 using System.Text;
 using TMPro;
 using UnityEngine;
-
+// Town Of Hostのコードを一部移植
+// 2026/9か10に追加
+// 忘れました。すいません
 namespace HyperRoles
 {
     [HarmonyPatch]
