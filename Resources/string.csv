@@ -1,2 +1,33 @@
-﻿Key,ja,en
-Role.Crewmate,Crewmate,クルーメイト
+﻿id,0,11
+
+Neutral,Neutral,第三陣営
+NeutralInfo,Act with only your own interests in mind,自分のことだけを考えて行動しろ
+
+# Impostor Roles
+Impostor,Impostor,インポスター
+SerialKiller,Serial Killer,シリアルキラー
+Camouflager,Camouflager,カモフラージャー
+SilentKiller,SilentKiller,サイレントキラー
+
+# Crewmate Roles
+Crewmate,Crewmate,クルーメイト
+Sheriff,Sheriff,シェリフ
+
+# Neutral Roles
+Jackal,Jackal,ジャッカル
+Sidekick,Sidekick,サイドキック
+
+# Impostor Role Intro
+SerialKillerIntro,I can't survive without getting kills.,キルをしないと生きていけない
+SilentKillerIntro,I can't hear anything...,何も聞こえない...
+
+# Crewmate Role Intro
+SheriffIntro,Shoot The Villain,人外を撃ち抜け
+
+# Neutral Role Intro
+JackalIntro,Devour Everything,全てを喰らい尽くせ
+SidekickIntro,Let's Support Our Master,ご主人様をサポートしよう
+
+# Button Text
+SerialKillerButtonText,Suicide,自殺まで
+CamouflagerText,Camouflage,カモフラージュ

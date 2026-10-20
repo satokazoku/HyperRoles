@@ -62,7 +62,7 @@ namespace HyperRoles
                     bool isChatButtonVisible = DestroyableSingleton<HudManager>.InstanceExists
                         && DestroyableSingleton<HudManager>.Instance.Chat.chatButton.gameObject.activeInHierarchy;
 
-                    float rightOffset = isChatButtonVisible ? 2.5f : 1.8f;
+                    float rightOffset = isChatButtonVisible ? 3.2f : 2.6f;
                     pingTrackerCredentialAspectPos.DistanceFromEdge = new Vector3(rightOffset, 0, 0);
                 }
 
@@ -90,6 +90,8 @@ namespace HyperRoles
                 credentials.fontSizeMin = 2f;
                 credentials.fontSizeMax = 2f;
                 credentials.alignment = TextAlignmentOptions.Right;
+                credentials.enableAutoSizing = false;
+                credentials.enableWordWrapping = false;
 
                 credentials.transform.position = new Vector3(1.07f, 2.8f, -5f);
             }

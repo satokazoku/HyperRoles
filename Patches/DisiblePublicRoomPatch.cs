@@ -17,7 +17,7 @@ namespace TownOfHost
 
             if (CultureInfo.CurrentCulture.Name == "ja-JP")
             {
-                text = "公開ルームは使用できません";
+                text = "公開ルームは使用できません。";
             }
             if (DestroyableSingleton<HudManager>._instance)
             {
