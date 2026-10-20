@@ -1,5 +1,5 @@
 # HyperRoles
-[Discord](https://discord.gg/8vfWDWPbC4)
+[Discord](https://discord.gg/8vfWDWPbC4) [Wiki](https://github.com/satokazoku/HyperRoles/wiki)
 
 > This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.
 
