@@ -2,16 +2,20 @@
 
 Neutral,Neutral,第三陣営
 NeutralInfo,Act with only your own interests in mind,自分のことだけを考えて行動しろ
+Unknown,Unknown,不明
 
 # Impostor Roles
 Impostor,Impostor,インポスター
 SerialKiller,Serial Killer,シリアルキラー
 Camouflager,Camouflager,カモフラージャー
 SilentKiller,SilentKiller,サイレントキラー
+Ninja,Ninja,ニンジャ
+MadMate,MadMate,マッドメイト
 
 # Crewmate Roles
 Crewmate,Crewmate,クルーメイト
 Sheriff,Sheriff,シェリフ
+Bakery,Bakery,ベーカリー
 
 # Neutral Roles
 Jackal,Jackal,ジャッカル
@@ -20,9 +24,13 @@ Sidekick,Sidekick,サイドキック
 # Impostor Role Intro
 SerialKillerIntro,I can't survive without getting kills.,キルをしないと生きていけない
 SilentKillerIntro,I can't hear anything...,何も聞こえない...
+MadMateIntro,Support Impostor,インポスターを助けよう
+ImpostorIntro,Eliminate the crewmates.,クルーメイトを全滅させろ
 
 # Crewmate Role Intro
+CrewmateIntro,Complete your tasks.,タスクを行う
 SheriffIntro,Shoot The Villain,人外を撃ち抜け
+BakeryIntro,Bake Bread,美味しいパンを焼こう
 
 # Neutral Role Intro
 JackalIntro,Devour Everything,全てを喰らい尽くせ
@@ -31,6 +39,25 @@ SidekickIntro,Let's Support Our Master,ご主人様をサポートしよう
 # Impostor Role Desc
 SilentKillerDesc,a,他のプレイヤーを視認・キルできないインポスター。\n一定時間止まったプレイヤーのみ視認・キルできる。\n(設定あり)
 
+# Options
+KillCool,KIll Cool Down,キルクールダウン
+Cooldown,CoolDown,クールダウン
+Duration,Duration,持続時間
+SheriffShotLimit,Kill Limit,キル可能回数
+JackalSideKickLimit,Sidekick limit,サイドキックできる回数
+JackalSidekickCooldown,Sidekick Cooldown,サイドキッククールダウン
+SerialKillerLimit,Time Limit,自殺までの時間
+NinjaInvisKillcool,a,透明化中にキルした時増加するキルクール
+NinjaVisKillcool,b,透明化解除時に増加するキルクール
+MaxKillcool,Max KillCool Down,最大キルクールダウン
+
 # Button Text
 SerialKillerButtonText,Suicide,自殺まで
 CamouflagerText,Camouflage,カモフラージュ
+NinjaText,Invisible,透明化
+
+Dead,Dead,死亡
+Alive,Alive,生存
+Result,Result,最終結果
+
+BakeryText,BakerynoText,ベーカリーがパンを焼いたようです...

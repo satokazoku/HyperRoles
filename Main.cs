@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using AmongUs.GameOptions;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
@@ -28,7 +29,7 @@ namespace HyperRoles
         public Harmony Harmony { get; } = new Harmony(PluginGuid);
         public static BepInEx.Logging.ManualLogSource Logger;
         public static NormalGameOptionsV12 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
-
+        public static HashSet<byte> InvisiblePlayerids = new();
         public override void Load()
         {
             Instance = this;
@@ -43,8 +44,10 @@ namespace HyperRoles
             {
             }
 
+            //ModRegistration.Register(Config);
             JackalSidekickButton.Register();
             CamouflagerButton.Register();
+            NinjaButton.Register();
 
             Harmony.PatchAll(Assembly.GetExecutingAssembly());
             Logger.LogInfo($"{ModName} v.{PluginVersion} loaded!");

@@ -19,7 +19,7 @@ namespace HyperRoles.Modules
             using var stream = assembly.GetManifestResourceStream("HyperRoles.Resources.string.csv");
             if (stream == null)
             {
-                Main.Logger.LogError("翻訳用CSVが見つかりません: HyperRoles.Resources.string.csv(ビルドアクションを「埋め込みリソース」にしてください)");
+                Main.Logger.LogError("翻訳用CSVが見つかりません");
                 return;
             }
 

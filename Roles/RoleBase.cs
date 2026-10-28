@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using HyperRoles.Modules;
 using UnityEngine;
+using UnityEngine.ProBuilder;
+using static HyperRoles.CustomRoleManager;
 
 namespace HyperRoles.Roles;
 
@@ -43,17 +45,82 @@ public abstract class RoleBase
     /// </summary>
     public virtual float KillCoolDown => Main.NormalOptions.KillCooldown;
     /// <summary>
-    /// カスタムボタンを有効化する
+    /// タスクを持つか。false の役職は、全体のタスク数(タスクバーの進捗)に数えない。
     /// </summary>
-    public virtual bool ShowUseButton => true;
-    public static string GetString(string str, Dictionary<string, string> replacementDic = null) => Translator.GetString(str, replacementDic);
+    public virtual bool HasTask => true;
+
+    // ------------------------------------------------------------
+    // 役職ごとの設定(/set 役職名 オプションID 数値 の、オプションID 2以降)
+    // ------------------------------------------------------------
+
+    static readonly Dictionary<int, RoleOptionDef> EmptyOptions = new();
+
     /// <summary>
-    /// インスタンス作成後すぐ呼ばれる
+    /// この役職の設定の定義。キーが、/set で指定するオプションID(2以降)。
+    /// 設定を持つ役職だけが override する。毎フレーム読まれることがあるので、
+    /// override 側は、static readonly の辞書を返す形にする(new() を返すと、毎回作り直される)。
+    /// </summary>
+    public virtual Dictionary<int, RoleOptionDef> Options => EmptyOptions;
+
+    /// <summary>
+    /// 設定値を読む。/set で変えられていればその値、なければ Options に書いた既定値。
+    /// </summary>
+    protected float GetOption(int optionId)
+    {
+        var defaultValue = Options.TryGetValue(optionId, out var def) ? def.Default : 0f;
+        return RoleSettings.GetOption(CustomRoleManager.GetId(this), optionId, defaultValue);
+    }
+
+    public static string GetString(string str, Dictionary<string, string> replacementDic = null) => Translator.GetString(str, replacementDic);
+    static readonly BepInEx.Logging.ManualLogSource log =
+        BepInEx.Logging.Logger.CreateLogSource("RoleBase");
+
+    /// <summary>
+    /// 設定の値を取得する
+    /// </summary>
+    /// <param name="roleid">取得する役職</param>
+    /// <param name="optionid">設定のID</param>
+    /// <param name="d">オプション自体が取得できない時に返す値</param>
+    /// <returns>設定の値</returns>
+    public static float GetOptionValue(RoleId roleid, int optionid, float d = 1f)
+    {
+        var setting = RoleSettings.Get(roleid);
+        var template = CreateRole(roleid);
+
+        if (setting == null)
+        {
+            log.LogWarning($"[RoleBase] RoleSettings.Get({nameof(roleid)}) is null!");
+            return d;
+        }
+
+        log.LogInfo($"[RoleBase] Setting Values Count: {setting.Values.Count}");
+        foreach (var kvp in setting.Values)
+        {
+            log.LogInfo($"[RoleBase] Stored Option ID {kvp.Key} = {kvp.Value}");
+        }
+
+        if (setting.Values.TryGetValue(optionid, out var val))
+        {
+            log.LogInfo($"[RoleBase] Found custom cooldown: {val}");
+            return val;
+        }
+
+        if (template != null && template.Options.TryGetValue(optionid, out var def))
+        {
+            log.LogInfo($"[RoleBase] Using default cooldown: {def.Default}");
+            return def.Default;
+        }
+
+        return d;
+    }
+
+    /// <summary>
+    /// 役職が、プレイヤーに割り当てられたときに呼ばれる(CustomRoleManager.SetRole から)。
     /// </summary>
     public virtual void Add()
     { }
     /// <summary>
-    /// インスタンスが破棄される前に呼ばれる
+    /// 役職が、プレイヤーから外れるとき(別の役職に変わるときなど)に呼ばれる。
     /// </summary>
     public virtual void OnDestroy()
     { }

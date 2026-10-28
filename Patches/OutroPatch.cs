@@ -140,7 +140,8 @@ static class EndGameSummaryPatch
     public static void Postfix()
     {
         var sb = new StringBuilder();
-        sb.Append("<#ffffff>最終結果</color>\n");
+        var result = Translator.GetString("Result");
+        sb.Append($"<#ffffff>{result}</color>\n");
         int count = 0;
 
         foreach (var p in PlayerControl.AllPlayerControls)
@@ -149,16 +150,28 @@ static class EndGameSummaryPatch
             count++;
 
             var name = p.GetPlayerColor();
-            var roleName = "不明";
-            var roleColor = "ffffff"; // 「#」は付けない(ToHtmlStringRGB も付けない)
+            var roleName = Translator.GetString("Unknown");
+            var roleColor = "ffffff";
 
             if (CustomRoleManager.TryGetRole(p, out var role))
             {
                 roleName = role.RoleName;
                 roleColor = ColorUtility.ToHtmlStringRGB(role.RoleColor);
             }
+            else
+            {
+                roleName = p.Data.Role.IsImpostor ? Translator.GetString("Impostor") : Translator.GetString("Crewmate");
+                if (p.Data.Role.IsImpostor)
+                {
+                    roleColor = ColorUtility.ToHtmlStringRGB(Palette.ImpostorRed);
+                }
+                else
+                {
+                    roleColor = ColorUtility.ToHtmlStringRGB(Palette.CrewmateBlue);
+                }
+            }
 
-            var status = p.Data.IsDead ? "死亡" : "生存";
+            var status = p.Data.IsDead ? Translator.GetString("Dead") : Translator.GetString("Alive");
 
             sb.Append($"{name}       <#ffffff>{status}      </color><#{roleColor}>{roleName}</color>\n");
         }

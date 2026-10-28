@@ -6,42 +6,6 @@ using HyperRoles.Modules;
 using HyperRoles.Roles;
 using UnityEngine;
 
-/*[HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.CoBegin))]
-static class IntroCoBeginPatch
-{
-    public static void Prefix(IntroCutscene __instance)
-    {
-        CustomRoleManager.RoleAssign();
-    }
-    public static void Postfix(IntroCutscene __instance)
-    {
-        __instance.StartCoroutine(OverwriteRoleText(__instance).WrapToIl2Cpp());
-    }
-
-    static IEnumerator OverwriteRoleText(IntroCutscene cutscene)
-    {
-        float elapsed = 0f;
-        // チーム画面(数秒)のあとにShowRoleが走るので、イントロ中は監視して上書きする
-        while (cutscene != null && elapsed < 10f)
-        {
-            if (cutscene.RoleText != null && cutscene.RoleText.gameObject.activeInHierarchy)
-            {
-                var color = CustomRoleManager.GetRoleColor(PlayerControl.LocalPlayer);
-                var name = CustomRoleManager.GetRoleName(PlayerControl.LocalPlayer);
-                var intro = CustomRoleManager.GetIntro(PlayerControl.LocalPlayer);
-
-                cutscene.YouAreText.color = color;
-                cutscene.RoleText.text = name;
-                cutscene.RoleText.color = color;
-                cutscene.RoleBlurbText.text = intro;
-                cutscene.RoleBlurbText.color = color;
-            }
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-    }
-}*/
-
 [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.CoBegin))]
 static class IntroCoBeginPatch
 {
@@ -59,6 +23,7 @@ static class IntroCoBeginPatch
 
     public static void Postfix(IntroCutscene __instance)
     {
+        Main.InvisiblePlayerids.Clear();
         log.LogInfo("[Intro] CoBegin Postfix called");
         __instance.StartCoroutine(OverwriteRoleText(__instance).WrapToIl2Cpp());
     }

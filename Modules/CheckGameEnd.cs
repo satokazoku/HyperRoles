@@ -16,7 +16,6 @@ public static class CheckGameEnd
 
     /// <summary>終了処理を一度だけ実行するためのフラグ</summary>
     static bool ended;
-    static bool warnedMissingRole;
 
     /// <summary>イントロが終わったか。イントロ中は終了判定をしない</summary>
     public static bool IntroFinished;
@@ -31,64 +30,108 @@ public static class CheckGameEnd
     public static void Reset()
     {
         ended = false;
-        warnedMissingRole = false;
         IntroFinished = false;
         AllDied = false;
         WinnerIds.Clear();
         WinnerTeam = Team.none;
         WinnerRole = CustomRoleManager.RoleId.Unknown;
     }
+    static bool SabotageTimedOut()
+    {
+        var ship = ShipStatus.Instance;
+        if (ship == null || ship.Systems == null) return false;
+
+        if (ship.Systems.TryGetValue(SystemTypes.LifeSupp, out var lifeSupp))
+        {
+            var oxygen = lifeSupp.TryCast<LifeSuppSystemType>();
+            if (oxygen != null && oxygen.Countdown < 0f) return true;
+        }
+
+        if (ship.Systems.TryGetValue(SystemTypes.Reactor, out var reactorSystem))
+        {
+            var reactor = reactorSystem.TryCast<ReactorSystemType>();
+            if (reactor != null && reactor.Countdown < 0f) return true;
+        }
+
+        if (ship.Systems.TryGetValue(SystemTypes.Laboratory, out var laboratorySystem))
+        {
+            var laboratory = laboratorySystem.TryCast<ReactorSystemType>();
+            if (laboratory != null && laboratory.Countdown < 0f) return true;
+        }
+
+        if (ship.Systems.TryGetValue(SystemTypes.HeliSabotage, out var heliSystem))
+        {
+            var heli = heliSystem.TryCast<HeliSabotageSystem>();
+            if (heli != null && heli.Countdown < 0f) return true;
+        }
+
+        return false;
+    }
 
     public static void CheckEnd()
     {
-        if (ended) return;
-        if (!IntroFinished) return; // イントロ中は判定しない
-        if (!IntroCoBeginPatch.RoleAssigned) return;
-        if (Main.NoEnd) return;
+        if (ended || Main.NoEnd) return;
+        if (!IntroFinished || !IntroCoBeginPatch.RoleAssigned) return; // イントロ中は判定しない
+        if (PlayerControl.AllPlayerControls == null || PlayerControl.AllPlayerControls.Count == 0) return;
+
+        // サボタージュ(酸素・リアクターなど)のカウントダウンが0になったら、インポスターの勝ち。
+        // バニラの終了判定を止めているので、ここで自前で確認する。
+        if (SabotageTimedOut())
+        {
+            foreach (var pc in PlayerControl.AllPlayerControls)
+            {
+                if (pc.Data.IsDead || pc.Data.Role.IsImpostor) continue;
+                pc.ExMurderPlayer(pc);
+            }
+            End(Team.Impostor, CustomRoleManager.RoleId.Unknown, GameOverReason.ImpostorsBySabotage,
+                winnersAsImpostor: true, isWinnerSide: r => r.Team == Team.Impostor, 0, 0, 0);
+            return;
+        }
 
         int imp = 0;
         int crew = 0;
         int jackal = 0;
+        bool _return = false;
 
         foreach (var p in PlayerControl.AllPlayerControls)
         {
             if (p == null || p.Data == null) continue;
             if (p.Data.IsDead) continue;
 
-            // 役職が取れない生存者がいる間は判定しない。
-            // (スキップして数えないと、全員0人=全滅と誤判定してしまう)
+            bool nullrole = false;
+
             if (!CustomRoleManager.TryGetRole(p, out var role))
             {
-                if (!warnedMissingRole)
-                {
-                    log.LogWarning($"[GameEnd] role missing for PlayerId={p.PlayerId}, skip check");
-                    warnedMissingRole = true;
-                }
-                return;
+                if (p.Data.Role.IsImpostor) ++imp;
+                else ++crew;
+                nullrole = true;
             }
 
-            switch (role.CountType)
+            if (!nullrole)
             {
-                case Count.Crewmate:
-                    ++crew;
-                    break;
-                case Count.Impostor:
-                    ++imp;
-                    break;
-                case Count.Jackal:
-                    ++jackal;
-                    break;
-                case Count.none:
-                    break;
+                switch (role.CountType)
+                {
+                    case Count.Crewmate:
+                        ++crew;
+                        break;
+                    case Count.Impostor:
+                        ++imp;
+                        break;
+                    case Count.Jackal:
+                        ++jackal;
+                        break;
+                    case Count.none:
+                        break;
 
-                //↓カウントが何らかの理由で取れないときのみ実行
-                default:
-                    //試合終わると困るんで。
-                    if (p.PlayerId == 0) ++imp;
-                    else ++crew;
-                    break;
+                    //↓カウントが何らかの理由で取れないときのみ実行
+                    default:
+                        _return = true;
+                        break;
+                }
             }
         }
+
+        if (_return) return;
 
         // else if でつなぐ。上から順に、最初に当てはまったものだけを実行する。
         if (imp == 0 && jackal == 0 && crew == 0)
@@ -101,7 +144,7 @@ public static class CheckGameEnd
         {
             // インポスター勝利
             End(Team.Impostor, CustomRoleManager.RoleId.Unknown, GameOverReason.ImpostorsByKill,
-                winnersAsImpostor: true, isWinnerSide: r => r.CountType == Count.Impostor, imp, crew, jackal);
+                winnersAsImpostor: true, isWinnerSide: r => r.Team == Team.Impostor, imp, crew, jackal);
         }
         else if (imp == 0 && jackal > 0 && jackal >= crew)
         {
@@ -117,43 +160,30 @@ public static class CheckGameEnd
         }
     }
 
-    /// <summary>
-    /// 終了処理。バニラの終了画面は「勝者=インポスター側/クルー側」で作られるため、
-    /// 勝者側の役職タイプをそろえてから RpcEndGame を呼ぶ。
-    /// winnersAsImpostor が true なら、勝者をImpostor・敗者をCrewmateにする(falseはその逆)。
-    /// </summary>
     static void End(Team winner, CustomRoleManager.RoleId winnerRole, GameOverReason reason,
-        bool winnersAsImpostor, Func<RoleBase, bool> isWinnerSide, int imp, int crew, int jackal)
+            bool winnersAsImpostor, Func<RoleBase, bool> isWinnerSide, int imp, int crew, int jackal)
     {
+        if (ended) return; // 二重実行防止
         ended = true;
         AllDied = winner == Team.none;
         log.LogInfo($"[GameEnd] winner={winner}, imp={imp}, crew={crew}, jackal={jackal}");
+
+        WinnerIds.Clear();
 
         foreach (var p in PlayerControl.AllPlayerControls)
         {
             if (p == null || p.Data == null) continue;
 
-            bool dead = p.Data.IsDead;
-
-            if (winner == Team.none)
-            {
-                p.RpcSetRole(RoleTypes.CrewmateGhost, true);
-                continue;
-            }
-
             bool onWinnerSide = CustomRoleManager.TryGetRole(p, out var role) && isWinnerSide(role);
-            bool asImpostor = onWinnerSide == winnersAsImpostor;
-
-            RoleTypes type = asImpostor
-                ? (dead ? RoleTypes.ImpostorGhost : RoleTypes.Impostor)
-                : (dead ? RoleTypes.CrewmateGhost : RoleTypes.Crewmate);
-            p.RpcSetRole(type, true);
-
-            if (onWinnerSide) WinnerIds.Add(p.PlayerId);
+            if (onWinnerSide)
+            {
+                WinnerIds.Add(p.PlayerId);
+            }
         }
 
         WinnerTeam = winner;
         WinnerRole = winnerRole;
+
         GameManager.Instance.RpcEndGame(reason, false);
     }
 }

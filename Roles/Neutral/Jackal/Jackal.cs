@@ -2,26 +2,39 @@
 using AmongUs.GameOptions;
 using Hazel;
 using HyperRoles.Modules;
+using MS.Internal.Xml.XPath;
 using UnityEngine;
 
 namespace HyperRoles.Roles.Neutral;
 
 public class Jackal : RoleBase
 {
+    private static readonly Dictionary<int, RoleOptionDef> Opt = new()
+    {
+        [2] = new(() => GetString("KillCool"), 30f, 0f, 60f, 2.5f),
+        [3] = new(() => GetString("JackalSidekickCooldown"), 30f, 0f, 60f, 2.5f),
+        [4] = new(() => GetString("JackalSideKickLimit"), 1f, 0f, 99f, 1f),
+    };
+    public override Dictionary<int, RoleOptionDef> Options => Opt;
     public override string RoleName => GetString("Jackal");
     public override string Intro => GetString("JackalIntro");
     public override Color RoleColor => new Color32(0, 180, 235, 255);
     public override Team Team => Team.Neutral;
     public override Count CountType => Count.Jackal;
     public override bool CanKill => true;
-    public override float KillCoolDown => 1f;
+    public override float KillCoolDown => GetOptionValue(CustomRoleManager.RoleId.Jackal, 2, 30f);
+    public override bool HasTask => false;
     public override bool CanVent => true;
-    public bool CanSidekick = true;
+    private int? _sk;
+    public int sk
+    {
+        get => _sk ??= (int)GetOptionValue(CustomRoleManager.RoleId.Jackal, 4, 1f);
+        set => _sk = value;
+    }
 }
 public static class JackalSidekickButton
 {
-    /// <summary>能力のクールダウン(秒)</summary>
-    const float AbilityCooldown = 20f;
+    static float AbilityCooldown => RoleBase.GetOptionValue(CustomRoleManager.RoleId.Jackal, 3, 30f);
 
     static readonly BepInEx.Logging.ManualLogSource log =
         BepInEx.Logging.Logger.CreateLogSource("TargetAbility");
@@ -33,20 +46,25 @@ public static class JackalSidekickButton
     public static void Register()
     {
         CustomActionButton.Register(new CustomActionButton(
-            label: Translator.GetString("Sidekick"),
+            label: () => Translator.GetString("Sidekick"),
             icon: CustomActionButton.LoadSprite("HyperRoles.Resources.Buttons.SideKick.png"),
             cooldown: AbilityCooldown,
 
             isVisible: () => CustomRoleManager.TryGetRole(PlayerControl.LocalPlayer, out var role)
-                            && role is Jackal jackal && jackal.CanSidekick
+                            && role is Jackal jackal && jackal.sk > 0
                             ,
 
             canUse: () => PlayerControl.LocalPlayer.CanMove && CurrentTarget() != null,
 
             onClick: () =>
             {
+                var p = PlayerControl.LocalPlayer;
+                if (!CustomRoleManager.TryGetRole(p, out var role) || role is not Jackal) return;
+                var jac = (Jackal)role;
+
                 var target = CurrentTarget();
                 if (target == null) return;
+                jac.sk--;
                 SendRequest(target);
             },
             key: () => KeyCode.F));
@@ -115,16 +133,23 @@ public static class JackalSidekickButton
                 if (CustomRoleManager.GetId(role) is CustomRoleManager.RoleId.Jackal)
                 {
                     var jackal = (Jackal)role;
-                    jackal.CanSidekick = false;
                     target.RpcSetRole(RoleTypes.Crewmate, true);
                     CustomRoleManager.SetRole(target.PlayerId, CustomRoleManager.RoleId.Sidekick);
-                    if (CustomRoleManager.TryGetRole(target, out var sk))
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(
+                        PlayerControl.LocalPlayer.NetId,
+                        (byte)CustomRpc.RoleRpc,
+                        SendOption.Reliable,
+                        -1);
+
+                    writer.Write((byte)CustomRoleManager.RoleId.Jackal);
+                    writer.Write(target.PlayerId);
+                    writer.Write(user.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                    if (CustomRoleManager.TryGetRole(target, out var sk) && sk is Sidekick)
                     {
-                        if (CustomRoleManager.GetId(sk) == CustomRoleManager.RoleId.Sidekick)
-                        {
-                            var skclass = (Sidekick)sk;
-                            skclass.SetParent(user);
-                        }
+                        var skclass = (Sidekick)sk;
+                        skclass.SetParent(user);
                     }
                 }
             }

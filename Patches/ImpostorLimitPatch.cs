@@ -6,7 +6,7 @@ namespace HyperRoles;
 
 public static class ImpostorLimit
 {
-    public const int Min = 0;
+    public const int Min = 1;
     public const int Max = 99;
 }
 

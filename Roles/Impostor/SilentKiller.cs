@@ -15,8 +15,8 @@ public class SilentKiller : RoleBase
     public override From FromMod => From.TownOfHost_Pko;
     public override bool CanVent => true;
     public override bool CanKill => true;
-    public override float KillCoolDown => 1f;
-    public override bool ShowUseButton => false;
+    public override float KillCoolDown => 5f;
+    public override bool HasTask => false;
     public static float StopTime = 5f;
     public static Dictionary<byte, float> StoppedPlayers = new();
     public static Dictionary<byte, Vector2> AllPlayerpositions = new();
@@ -33,6 +33,7 @@ public class SilentKiller : RoleBase
         {
             if (!AllPlayerpositions.ContainsKey(pc.PlayerId))
             {
+                StoppedPlayers[pc.PlayerId] = 999f;
                 AllPlayerpositions[pc.PlayerId] = pc.transform.position;
                 continue;
             }
@@ -65,43 +66,48 @@ public static class SilentKillerInvisPatch
 {
     static void Postfix(PlayerControl __instance)
     {
-        if (__instance == null) return;
+        if (__instance == null || __instance.Data == null) return;
+        if (PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null) return;
+
+        if (__instance.inVent) return;
+
         if (__instance.PlayerId == PlayerControl.LocalPlayer.PlayerId)
         {
-            __instance.Visible = true;
-            return;
-        }
-        if (!CustomRoleManager.TryGetRole(PlayerControl.LocalPlayer, out var role))
-        {
-            __instance.Visible = true;
-            return;
-        }
-        if (role is not SilentKiller)
-        {
+            if (Main.InvisiblePlayerids is not null && Main.InvisiblePlayerids.Contains(__instance.PlayerId))
+            {
+                __instance.invisibilityAlpha = 0.5f;
+            }
+            else if (Main.InvisiblePlayerids is not null && !Main.InvisiblePlayerids.Contains(__instance.PlayerId))
+            {
+                __instance.invisibilityAlpha = 1f;
+            }
+
             __instance.Visible = true;
             return;
         }
 
-        if (!SilentKiller.StoppedPlayers.TryGetValue(__instance.PlayerId, out var time))
+        if (__instance.Data.IsDead)
         {
             __instance.Visible = false;
             return;
         }
-        if (time < SilentKiller.StopTime)
+
+        if (Main.InvisiblePlayerids is not null && Main.InvisiblePlayerids.Contains(__instance.PlayerId))
+        {
+            __instance.Visible = false;
+            return;
+        }
+
+        if (!CustomRoleManager.TryGetRole(PlayerControl.LocalPlayer, out var role) || role is not SilentKiller)
+        {
+            __instance.Visible = true;
+            return;
+        }
+        if (!SilentKiller.StoppedPlayers.TryGetValue(__instance.PlayerId, out var time) || time < SilentKiller.StopTime)
         {
             __instance.Visible = false;
             return;
         }
         __instance.Visible = true;
-    }
-}
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
-class SKurderPlayerPatch
-{
-    public static void Prefix(PlayerControl __instance, PlayerControl target)
-    {
-        if (target == null) return;
-        target.Visible = true;
     }
 }

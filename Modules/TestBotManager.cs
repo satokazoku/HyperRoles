@@ -232,6 +232,7 @@ static class BotBeginGamePatch
 
     public static void Prefix()
     {
+        if (!Main.IsDebugMode || !GameStates.IsLocalGame) return;
         log.LogInfo("[TestBot] BeginGame Prefix called");
         TestBotManager.SpawnBotsOnStart();
     }

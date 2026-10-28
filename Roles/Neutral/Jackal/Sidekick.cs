@@ -11,7 +11,7 @@ public class Sidekick : RoleBase
     public override Team Team => Team.Neutral;
     public override Count CountType => Count.Jackal;
     public override bool CanVent => true;
-    public override bool ShowUseButton => false;
+    public override bool HasTask => false; 
     public PlayerControl Parent;
     public void SetParent(PlayerControl parent)
     {

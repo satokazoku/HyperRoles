@@ -84,7 +84,8 @@ namespace HyperRoles
             // 自殺
             if (KeyCommandPatch.GetKeysDown(KeyCode.LeftControl, KeyCode.K))
             {
-                PlayerControl.LocalPlayer.RpcMurderPlayer(PlayerControl.LocalPlayer, true);
+                var pc = PlayerControl.LocalPlayer;
+                pc.ExMurderPlayer(pc);
             }
             if (KeyCommandPatch.GetKeysDown(KeyCode.LeftControl, KeyCode.E, KeyCode.R))
             {
@@ -117,10 +118,10 @@ namespace HyperRoles
                     DestroyableSingleton<HudManager>.Instance.Notifier.AddDisconnectMessage(text);
                 }
             }
-            /*if (KeyCommandPatch.GetKeysDown(KeyCode.LeftControl, KeyCode.O))
+            if (KeyCommandPatch.GetKeysDown(KeyCode.LeftControl, KeyCode.O))
             {
-                CustomRoleManager.SetRole(PlayerControl.LocalPlayer.PlayerId, CustomRoleManager.RoleId.SerialKiller);
-            }*/
+                CustomRoleManager.SetRole(PlayerControl.LocalPlayer.PlayerId, CustomRoleManager.RoleId.Camouflager);
+            }
         }
     }
 }

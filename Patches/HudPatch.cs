@@ -7,14 +7,19 @@ namespace HyperRoles;
 
 public static class AllKill
 {
-    public static float Cooldown()
+    /// <summary>指定したプレイヤーの役職の、キルクールダウン</summary>
+    public static float Cooldown(PlayerControl player)
     {
-        if (CustomRoleManager.TryGetRole(PlayerControl.LocalPlayer, out var role))
+        if (player != null && CustomRoleManager.TryGetRole(player, out var role))
         {
             return role.KillCoolDown;
         }
         return Main.NormalOptions.KillCooldown;
     }
+
+    /// <summary>自分の役職の、キルクールダウン(ボタンの表示用)</summary>
+    public static float Cooldown() => Cooldown(PlayerControl.LocalPlayer);
+
     public static float Range => Main.NormalOptions.KillDistance;
     public static float LocalTimer;
     public static readonly Dictionary<byte, float> LastKillTime = new();
@@ -49,7 +54,8 @@ public static class AllKill
 
         if (killerRole.CountType == Count.Impostor && targetRole.CountType == Count.Impostor) return false;
         if (killerRole.CountType == Count.Jackal && targetRole.CountType == Count.Jackal) return false;
-        return true;
+
+        return target.Visible;
     }
 
     /// <summary>近くのキル対象を探す</summary>
@@ -65,6 +71,7 @@ public static class AllKill
             if (p.Data == null || p.Data.IsDead || p.Data.Disconnected) continue;
             if (p.inVent) continue;
             if (!CanKillTarget(me, p)) continue; // 味方(同じ陣営)は対象にしない
+            if (!p.Visible) continue;
 
             float d = Vector2.Distance(myPos, p.GetTruePosition());
             if (d < best)
@@ -106,37 +113,51 @@ static class AllKillHudPatch
 
 /// <summary>
 /// ホスト側のキル判定を差し替える。バニラは「インポスターだけ」を通すので、役職を問わず通す。
+/// キルが通らなかったときは、理由をログに出す(どの条件で止まったかを調べるため)。
 /// </summary>
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CheckMurder))]
 static class AllKillCheckMurderPatch
 {
+    static bool Reject(string reason, PlayerControl killer, PlayerControl target)
+    {
+        AllKill.Log.LogInfo($"[AllKill] rejected ({reason}): {killer?.PlayerId} -> {target?.PlayerId}");
+        return false;
+    }
+
     public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
     {
         if (!AmongUsClient.Instance.AmHost) return true;
 
         var killer = __instance;
-        if (killer == null || target == null) return false;
-        if (killer.Data == null || target.Data == null) return false;
-        if (killer.Data.IsDead || killer.Data.Disconnected) return false;
-        if (target.Data.IsDead || target.Data.Disconnected) return false;
-        if (killer.PlayerId == target.PlayerId) return false;
-        if (MeetingHud.Instance != null) return false;
+        if (killer == null || target == null) return Reject("null", killer, target);
+        if (killer.Data == null || target.Data == null) return Reject("no data", killer, target);
+        if (killer.Data.IsDead || killer.Data.Disconnected) return Reject("killer dead", killer, target);
+        if (target.Data.IsDead || target.Data.Disconnected) return Reject("target dead", killer, target);
+        if (killer.PlayerId == target.PlayerId) return Reject("self", killer, target);
+        if (MeetingHud.Instance != null) return Reject("meeting", killer, target);
 
         // 同じ陣営(インポスター同士、ジャッカル同士)はキルできない
-        if (!AllKill.CanKillTarget(killer, target)) return false;
-        if (CustomRoleManager.TryGetRole(__instance, out var irole) && !irole.OnCheckMurder(__instance, target)) return false;
-        if (CustomRoleManager.TryGetRole(target, out var trole) && !trole.OnCheckMurder(__instance, target)) return false;
+        if (!AllKill.CanKillTarget(killer, target)) return Reject("same team / invisible", killer, target);
+        if (CustomRoleManager.TryGetRole(killer, out var irole) && !irole.OnCheckMurder(killer, target)) return Reject("killer role OnCheckMurder", killer, target);
+        if (CustomRoleManager.TryGetRole(target, out var trole) && !trole.OnCheckMurder(killer, target)) return Reject("target role OnCheckMurder", killer, target);
 
         // 距離(通信遅延を見て少し余裕を持たせる)
         float dist = Vector2.Distance(killer.GetTruePosition(), target.GetTruePosition());
-        if (dist > AllKill.Range + 1f) return false;
+        if (dist > AllKill.Range + 1f) return Reject($"distance {dist:F2}", killer, target);
 
         // クールダウン(こちらも少し余裕を持たせる)
-        float last = AllKill.LastKillTime.TryGetValue(killer.PlayerId, out var t) ? t : AllKill.GameStartTime;
-        if (Time.time - last < AllKill.Cooldown() - 0.5f) return false;
+        // ・キルした本人の役職のクールダウンで見る(ホスト自身の役職ではなく)
+        // ・バニラのインポスターは、バニラのキルボタンが自分でクールダウンを管理しているので、ここでは見ない。
+        //   (見ると、バニラのボタンが「押せる」状態でも、こちらの値が長いと、黙って断ってしまう)
+        bool vanillaButton = killer.Data.Role != null && killer.Data.Role.IsImpostor;
+        if (!vanillaButton)
+        {
+            float last = AllKill.LastKillTime.TryGetValue(killer.PlayerId, out var t) ? t : AllKill.GameStartTime;
+            if (Time.time - last < AllKill.Cooldown(killer) - 0.5f) return Reject("cooldown", killer, target);
+        }
 
         AllKill.Log.LogInfo($"[AllKill] {killer.PlayerId} -> {target.PlayerId}");
-        killer.RpcMurderPlayer(target, true);
+        killer.ExMurderPlayer(target);
         return false; // バニラの判定は実行しない
     }
 }
@@ -152,7 +173,7 @@ static class AllKillMurderPlayerPatch
         if (__instance == null) return;
 
         if (__instance.AmOwner)
-            AllKill.LocalTimer = AllKill.Cooldown();
+            AllKill.LocalTimer = AllKill.Cooldown(__instance);
 
         if (AmongUsClient.Instance.AmHost)
             AllKill.LastKillTime[__instance.PlayerId] = Time.time;
@@ -258,22 +279,5 @@ static class VentCanUsePatch
 
         __result = distance;
         return false; // バニラの判定は実行しない
-    }
-}
-
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-static class UseButtonPatch
-{
-    public static void Postfix(HudManager __instance)
-    {
-        if (ShipStatus.Instance == null) return; // ロビー等はバニラの表示のまま
-
-        var me = PlayerControl.LocalPlayer;
-        if (me == null || me.Data == null) return;
-        if (!CustomRoleManager.TryGetRole(me, out var role)) return;
-        if (role.ShowUseButton) return;
-
-        var use = __instance.UseButton;
-        if (use != null) use.gameObject.SetActive(false);
     }
 }

@@ -1,20 +1,30 @@
 ﻿using HarmonyLib;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using TMPro;
 using UnityEngine;
 // Town Of Hostのコードを一部移植
-// 2026/9か10に追加
-// 忘れました。すいません
 namespace HyperRoles
 {
     [HarmonyPatch]
+
     public static class CredentialsPatch
     {
         public static SpriteRenderer HyRLogo { get; private set; }
-        private static TextMeshPro pingTrackerCredential = null;
-        private static AspectPosition pingTrackerCredentialAspectPos = null;
+
+        // ===== 見た目の調整用定数 =====
+        private const float FontSize = 2.4f;          // Ping行・バージョンの文字サイズ
+        private const string NameSize = "130%";       // MOD名の相対サイズ(スクショ風に大きめ)
+        private const float RightOffset = 2.6f;       // 右端からの距離(チャットボタンなし)
+        private const float RightOffsetWithChat = 3.2f; // 右端からの距離(チャットボタンあり。v18のHelpボタン回避)
+        private const float TopOffset = 0f;           // 上端からの距離(小さいほど上。0.1→0で少し上へ)
+        private const float ModStampOffsetY = 1.2f;   // 「Modded」スタンプの高さ(全シーン共通)
+
+        // MOD名を色分けしたい場合はここを編集(例: "<color=#ffa500>Hyper</color><color=#00ff00>Roles</color>")
+        private static string ColoredModName => $"<color={Main.ModColor}>{Main.ModName}</color>";
+
+        private static string Header =>
+            $"<size={NameSize}>{ColoredModName}</size> v{Main.PluginShowVersion}\n";
 
         public static Sprite LoadSpriteFromResource(string resourcePath, float pixelsPerUnit)
         {
@@ -39,43 +49,45 @@ namespace HyperRoles
         [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
         class PingTrackerUpdatePatch
         {
-            static StringBuilder sb = new StringBuilder();
-
             static void Postfix(PingTracker __instance)
             {
-                if (pingTrackerCredential == null)
-                {
-                    var uselessPingTracker = Object.Instantiate(__instance, __instance.transform.parent);
-                    pingTrackerCredential = uselessPingTracker.GetComponent<TextMeshPro>();
-                    Object.Destroy(uselessPingTracker);
+                var text = __instance.text;
+                if (text == null) return;
 
-                    pingTrackerCredential.alignment = TextAlignmentOptions.TopRight;
-                    pingTrackerCredential.rectTransform.pivot = new Vector2(1f, 0.7f);
+                // 文字設定をシーンに関係なく固定
+                text.enableAutoSizing = false;
+                text.fontSize = text.fontSizeMin = text.fontSizeMax = FontSize;
+                text.enableWordWrapping = false;
+                text.richText = true;
+                text.alignment = TextAlignmentOptions.TopRight;
+                text.rectTransform.pivot = new Vector2(1f, 1f);
+                text.fontSize = 2.5f;
+                text.fontSizeMin = 2.5f;
+                text.fontSizeMax = 2.5f;
 
-                    pingTrackerCredentialAspectPos = pingTrackerCredential.GetComponent<AspectPosition>();
-                    pingTrackerCredentialAspectPos.Alignment = AspectPosition.EdgeAlignments.RightTop;
-                    pingTrackerCredential.gameObject.name = "CredentialText";
-
-                    uselessPingTracker.gameObject.SetActive(true);
-                }
-
-                if (pingTrackerCredentialAspectPos)
+                // 位置はチャットボタンの有無で切り替え
+                var aspect = __instance.GetComponent<AspectPosition>();
+                if (aspect != null)
                 {
                     bool isChatButtonVisible = DestroyableSingleton<HudManager>.InstanceExists
+                        && DestroyableSingleton<HudManager>.Instance.Chat != null
                         && DestroyableSingleton<HudManager>.Instance.Chat.chatButton.gameObject.activeInHierarchy;
 
-                    float rightOffset = isChatButtonVisible ? 3.2f : 2.6f;
-                    pingTrackerCredentialAspectPos.DistanceFromEdge = new Vector3(rightOffset, 0, 0);
+                    float rightOffset = isChatButtonVisible ? RightOffsetWithChat : RightOffset;
+
+                    aspect.Alignment = AspectPosition.EdgeAlignments.RightTop;
+                    aspect.DistanceFromEdge = new Vector3(rightOffset, TopOffset, 0f);
+                    aspect.AdjustPosition();
                 }
 
-                sb.Clear();
-                sb.Append("\r\n").Append($"<color={Main.ModColor}>{Main.ModName}</color> v{Main.PluginShowVersion}");
-
-                pingTrackerCredential.text = sb.ToString();
-                __instance.text.alignment = TextAlignmentOptions.TopLeft;
+                // 1行目: MOD名 + バージョン / 2行目以降: 元のPing表示
+                var header = Header;
+                if (!text.text.StartsWith(header))
+                {
+                    text.text = header + text.text;
+                }
             }
         }
-
         [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
         class VersionShowerStartPatch
         {
@@ -85,6 +97,10 @@ namespace HyperRoles
 
                 var credentials = Object.Instantiate(__instance.text, __instance.transform);
                 credentials.gameObject.name = "HyRCredentialsText";
+
+                // ローカル画面を開くとVersionShower側のスケール等が変わりサイズが変動するため、
+                // 親から切り離して影響を受けないようにする(現在のワールドスケール・位置は維持)
+                credentials.transform.SetParent(null, true);
 
                 credentials.text = $"<color={Main.ModColor}>{Main.ModName}</color> v{Main.PluginShowVersion}";
 
@@ -98,7 +114,6 @@ namespace HyperRoles
                 credentials.transform.position = new Vector3(1.07f, 2.8f, -5f);
             }
         }
-
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
         class TitleLogoPatch
         {
@@ -130,10 +145,9 @@ namespace HyperRoles
 
             public static void Postfix(ModManager __instance)
             {
-                var offset_y = HudManager.InstanceExists ? 1.6f : 0.9f;
                 __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(
                     __instance.localCamera, AspectPosition.EdgeAlignments.RightTop,
-                    new Vector3(0.4f, offset_y, __instance.localCamera.nearClipPlane + 0.1f));
+                    new Vector3(0.4f, ModStampOffsetY, __instance.localCamera.nearClipPlane + 0.1f));
             }
         }
     }

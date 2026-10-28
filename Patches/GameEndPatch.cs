@@ -1,12 +1,32 @@
 ﻿using HarmonyLib;
 
-namespace HyperRoles.Patches;
-
-[HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
-class GameEndChecker
+namespace HyperRoles.Modules
 {
-    public static bool Prefix()
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.ShouldCheckForGameEnd), MethodType.Getter)]
+    static class GameManagerShouldCheckForGameEndPatch
     {
-        return false;
+        public static void Postfix(ref bool __result)
+        {
+            if (!CheckGameEnd.IntroFinished)
+            {
+                __result = false;
+            }
+        }
+    }
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
+    static class ShipStatusAwakeResetPatch
+    {
+        public static void Prefix()
+        {
+            CheckGameEnd.Reset();
+        }
+    }
+    [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
+    class GameEndChecker
+    {
+        public static bool Prefix()
+        {
+            return false;
+        }
     }
 }

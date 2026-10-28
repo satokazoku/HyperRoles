@@ -6,7 +6,6 @@ class MurderPlayerPatch
 {
     public static void Postfix(PlayerControl __instance, PlayerControl target)
     {
-        // ターゲットが正常にキルされて死亡しているかチェック
         if (target == null || !target.Data.IsDead) return;
 
         foreach (var p in PlayerControl.AllPlayerControls)
